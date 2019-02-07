@@ -14,8 +14,24 @@ header{
 
 .gameSide{
     width: 40%;
-    display: grid;
-    grid-template-columns: auto auto;
+}
+
+.dieBox{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.holdBox{
+    display: flex;
+    justify-content: space-evenly;
+
+}
+
+.buttonBox{
+    display: flex;
+    margin-top: 20px;
+    justify-content: space-evenly;
+
 }
 
 .hold{
@@ -66,6 +82,4 @@ header{
     justify-self: center;
 }
 
-.rollBtn{
-    margin-bottom: 10px;
-}
+
