@@ -38,7 +38,7 @@ let game = {
 
     roll: function () {
         if (game.rollCount > 0) {
-            // game.rollCount--;
+            game.rollCount--;
             let count = 0;
             let timer = setInterval(function () {
                 if (count >= 7) {
@@ -61,13 +61,13 @@ let game = {
         }
     },
 
-    checkYahzee: function(){
+    checkYahzee: function () {
         let bigWinner = game.dice.map((die) => die.value);
         console.log(bigWinner);
         if (bigWinner.every((val) => val === bigWinner[0])) {
             console.log("You sonofabitch!!!")
         }
-        
+
     },
 
     clear: function () {
@@ -94,18 +94,68 @@ function checkMe() {
     if ($(".scoreValue").attr("data-saved") === "false") {
         $(".scoreValue").text("0");
     }
-    if (this.dataset.score === "number"){
-        let target = parseFloat(this.dataset.number);
-        let scores = game.dice.filter((die) => die.value === target).map((die) => die.value);
-        console.log(scores)
-        if (scores.length > 0) {
-            let totalScore = scores.reduce((amount, total) => amount + total)
-            console.log(totalScore)
-            $("#"+$(this).attr("data-out")).text(totalScore)
-        } else {
-            console.log("No scores like that here");
-        }
+    // if (this.dataset.score === "number") {
+    //     let target = parseFloat(this.dataset.number);
+    //     let scores = game.dice.filter((die) => die.value === target).map((die) => die.value);
+    //     console.log(scores)
+    //     if (scores.length > 0) {
+    //         let totalScore = scores.reduce((amount, total) => amount + total)
+    //         console.log(totalScore)
+    //         $("#" + $(this).attr("data-out")).text(totalScore)
+    //     } else {
+    //         console.log("No scores like that here");
+    //     }
+    // }
+    switch (this.dataset.score) {
+        case "number":
+            let target = parseFloat(this.dataset.number);
+            let scores = game.dice.filter((die) => die.value === target).map((die) => die.value);
+            console.log(scores)
+            if (scores.length > 0) {
+                let totalScore = scores.reduce((amount, total) => amount + total)
+                console.log(totalScore)
+                $("#" + $(this).attr("data-out")).text(totalScore)
+            } else {
+                console.log("No scores like that here");
+            }
+            break;
+        case "total":
+            let totalNumber = game.dice.map((die)=>die.value);
+            console.log(totalNumber);
+            if (totalNumber.length === 5) {
+                totalNumber = totalNumber.reduce((amount, total) => amount + total);
+                console.log(totalNumber)
+                $("#" + $(this).attr("data-out")).text(totalNumber)
+            };
+            break;
+        case "kind3":
+            let testing = game.dice.map((die) => die.value);
+            console.log(testing);
+            var ones = testing.filter((num)=> num === 1);
+            var twos = testing.filter((num)=> num === 2);
+            var threes = testing.filter((num)=> num === 3);
+            var fours = testing.filter((num)=> num === 4);
+            var fives = testing.filter((num)=> num === 5);
+            var sixes = testing.filter((num)=> num === 6);
+            console.log(ones);
+            console.log(twos);
+            console.log(threes);
+            console.log(fours);
+            console.log(fives);
+            console.log(sixes);
+            if (this.id === "checkKind3") {
+                if (ones.length >= 3 || twos.length >= 3 || threes.length >= 3 || fours.length >= 3 || fives.length >= 3 || sixes.length >= 3) {
+                    console.log("Three of a kind")
+                    $("#"+$(this).attr("data-out")).text(testing.reduce((amount, total) => amount + total));
+                }
+            }
+            break;
+        default:
+            console.log("checkMe switch not working as expected");
     }
 }
+
+
+
 
 
