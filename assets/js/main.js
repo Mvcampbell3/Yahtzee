@@ -53,7 +53,6 @@ let game = {
                             let num = Math.floor((Math.random() * 6) + 1);
                             die.background(num);
                         }
-
                     })
                 }
             }, 100)
@@ -67,12 +66,12 @@ let game = {
             die.hold = true;
             die.holdFunction();
         })
-    }
-
-
-}
+    },
+} // End of Game Object
 
 $(".rollBtn").on("click", game.roll);
 $(".clearBtn").on("click", game.clear);
+
+game.dice.forEach((die) => die.blank());
 
 

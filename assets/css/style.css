@@ -39,6 +39,7 @@ header{
     text-align: center;
     border: 1px black solid;
     margin: 3px 0;
+    padding: 3px 0;
 }
 
 .open{
@@ -59,7 +60,6 @@ header{
     width: 73px;
     height: 73px;
     border: 1px black solid;
-    /* background-color: black; */
     background-size: contain;
     background-position: center;
 }
