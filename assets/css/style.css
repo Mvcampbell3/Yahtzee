@@ -1,0 +1,71 @@
+body{
+    box-sizing: border-box;
+    user-select: none;
+}
+
+header{
+    text-align: center;
+}
+
+.container{
+    width: 80%;
+    margin: auto;
+}
+
+.gameSide{
+    width: 40%;
+    display: grid;
+    grid-template-columns: auto auto;
+}
+
+.hold{
+    width: 73px;
+    text-align: center;
+    border: 1px black solid;
+    margin: 3px 0;
+}
+
+.open{
+    box-shadow: 3px 3px 10px;
+    background-color: white;
+    transition: all, .25s;
+}
+
+.closed{
+    box-shadow: 0 0 0;
+    background-color: darkred;
+    color: white;
+    transition: all, .25s;
+}
+
+
+.dice{
+    width: 73px;
+    height: 73px;
+    border: 1px black solid;
+    /* background-color: black; */
+    background-size: contain;
+    background-position: center;
+}
+
+.btn{
+    border: 1px black solid;
+    box-shadow: 3px 3px 10px;
+}
+
+.btn:active{
+    box-shadow: none;
+}
+
+.big{
+    width: 90px;
+    text-align: center;
+    padding: 20px 10px;
+    font-size: 20px;
+    font-weight: bold;
+    justify-self: center;
+}
+
+.rollBtn{
+    margin-bottom: 10px;
+}
