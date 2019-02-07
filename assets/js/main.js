@@ -13,6 +13,8 @@ function Dice(url, id, holdId) {
         }
     };
 
+    this.value = 0;
+
     this.setHold = $("#" + this.holdId).on("click", this.holdFunction.bind(this));
 
     this.background = function (number) {
@@ -36,14 +38,13 @@ let game = {
 
     roll: function () {
         if (game.rollCount > 0) {
-            game.rollCount--;
+            // game.rollCount--;
             let count = 0;
             let timer = setInterval(function () {
                 if (count >= 7) {
                     clearInterval(timer);
-                    console.log("ran through timer");
                     game.dice.forEach((die) => $("#" + die.id).css("opacity", "1.0"));
-
+                    game.checkYahzee();
                 } else {
                     count++;
 
@@ -52,11 +53,21 @@ let game = {
                             $("#" + die.id).css("opacity", "0.5");
                             let num = Math.floor((Math.random() * 6) + 1);
                             die.background(num);
+                            die.value = num;
                         }
                     })
                 }
             }, 100)
         }
+    },
+
+    checkYahzee: function(){
+        let bigWinner = game.dice.map((die) => die.value);
+        console.log(bigWinner);
+        if (bigWinner.every((val) => val === bigWinner[0])) {
+            console.log("You sonofabitch!!!")
+        }
+        
     },
 
     clear: function () {
@@ -73,5 +84,28 @@ $(".rollBtn").on("click", game.roll);
 $(".clearBtn").on("click", game.clear);
 
 game.dice.forEach((die) => die.blank());
+
+// This may be added to the actual game object later, I am not sure
+// Could even make it it's own object, or have it live out in the wild like this.
+
+$(".check").on("click", checkMe);
+
+function checkMe() {
+    if ($(".scoreValue").attr("data-saved") === "false") {
+        $(".scoreValue").text("0");
+    }
+    if (this.dataset.score === "number"){
+        let target = parseFloat(this.dataset.number);
+        let scores = game.dice.filter((die) => die.value === target).map((die) => die.value);
+        console.log(scores)
+        if (scores.length > 0) {
+            let totalScore = scores.reduce((amount, total) => amount + total)
+            console.log(totalScore)
+            $("#"+$(this).attr("data-out")).text(totalScore)
+        } else {
+            console.log("No scores like that here");
+        }
+    }
+}
 
 

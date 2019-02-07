@@ -3,6 +3,11 @@ body{
     user-select: none;
 }
 
+h1, h2, h3, h4, h5, h6, p, body, ul{
+    padding: 0;
+    margin: 0;
+}
+
 header{
     text-align: center;
 }
@@ -10,6 +15,8 @@ header{
 .container{
     width: 80%;
     margin: auto;
+    display: flex;
+    justify-content: space-between;
 }
 
 .gameSide{
@@ -80,6 +87,42 @@ header{
     font-size: 20px;
     font-weight: bold;
     justify-self: center;
+}
+
+/* Scoring Forms */
+
+.scoringForm{
+    display: flex;
+}
+
+.lowerScore{
+    margin-left: 15px
+}
+
+.scoreTitle{
+    width: 100px;
+    /* text-align: center; */
+}
+
+.scoreValue{
+    width: 24px;
+    text-align: right;
+}
+
+.scoreItem{
+    display: flex;
+    align-items: center;
+    width: 170px;
+    height: 44px;
+    justify-content: space-between;
+    border-top: 1px black solid;
+    /* border-bottom: 1px black solid; */
+}
+
+.check{
+    height: 30px;
+    width: 30px;
+    background-color: grey;
 }
 
 
