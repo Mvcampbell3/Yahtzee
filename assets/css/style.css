@@ -81,7 +81,7 @@ header{
 }
 
 .big{
-    width: 90px;
+    width: 120px;
     text-align: center;
     padding: 20px 10px;
     font-size: 20px;
@@ -101,7 +101,6 @@ header{
 
 .scoreTitle{
     width: 100px;
-    /* text-align: center; */
 }
 
 .scoreValue{
@@ -122,6 +121,14 @@ header{
     height: 30px;
     width: 30px;
     background-color: grey;
+}
+
+.check-down{
+    background-color: green;
+}
+
+.check-saved{
+    background-color: deepskyblue;
 }
 
 

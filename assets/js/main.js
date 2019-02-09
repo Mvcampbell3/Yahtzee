@@ -38,7 +38,13 @@ let game = {
 
     roll: function () {
         if (game.rollCount > 0) {
-            game.rollCount--;
+            // game.rollCount--;
+            $(".check").removeClass("check-down");
+            game.lastScore = null;
+            var scoreArray = [].slice.call(document.querySelectorAll(".scoreValue"));
+            scoreArray = scoreArray.filter((score) => score.dataset.saved === "false");
+            scoreArray.forEach((score) => score.innerText = "0");
+
             let count = 0;
             let timer = setInterval(function () {
                 if (count >= 7) {
@@ -71,13 +77,36 @@ let game = {
     },
 
     clear: function () {
-        game.rollCount = 3;
-        game.dice.forEach((die) => {
-            die.blank();
-            die.hold = true;
-            die.holdFunction();
-        })
+        game.upperTotal();
+        if (game.lastScore != null) {
+            game.rollCount = 3;
+            game.dice.forEach((die) => {
+                die.blank();
+                die.hold = true;
+                die.holdFunction();
+            });
+            $("#" + game.lastScore).attr("data-saved", "true");
+            $(".check-down").attr("class", "check check-saved");
+            console.log(game.lastScore);
+        }
     },
+
+    upperTotal: function () {
+        var upperArray = [].slice.call(document.querySelectorAll(".upper"));
+        let sum = upperArray.map((score) => parseFloat(score.innerText)).reduce((amount, total) => amount + total);
+        console.log(sum);
+        $("#scoreUpSub").text(sum);
+        if (sum >= 63) {
+            $("#scoreUpBonus").text(35);
+            $("#scoreUpper").text(sum + 35);
+        } else {
+            $("#scoreUpBonus").text(0);
+            $("#scoreUpper").text(sum);
+        }
+    },
+
+    lastScore: null,
+    oneYZ: false,
 } // End of Game Object
 
 $(".rollBtn").on("click", game.roll);
@@ -91,67 +120,135 @@ game.dice.forEach((die) => die.blank());
 $(".check").on("click", checkMe);
 
 function checkMe() {
-    if ($(".scoreValue").attr("data-saved") === "false") {
-        $(".scoreValue").text("0");
-    }
-    // if (this.dataset.score === "number") {
-    //     let target = parseFloat(this.dataset.number);
-    //     let scores = game.dice.filter((die) => die.value === target).map((die) => die.value);
-    //     console.log(scores)
-    //     if (scores.length > 0) {
-    //         let totalScore = scores.reduce((amount, total) => amount + total)
-    //         console.log(totalScore)
-    //         $("#" + $(this).attr("data-out")).text(totalScore)
-    //     } else {
-    //         console.log("No scores like that here");
-    //     }
-    // }
-    switch (this.dataset.score) {
-        case "number":
-            let target = parseFloat(this.dataset.number);
-            let scores = game.dice.filter((die) => die.value === target).map((die) => die.value);
-            console.log(scores)
-            if (scores.length > 0) {
-                let totalScore = scores.reduce((amount, total) => amount + total)
-                console.log(totalScore)
-                $("#" + $(this).attr("data-out")).text(totalScore)
-            } else {
-                console.log("No scores like that here");
-            }
-            break;
-        case "total":
-            let totalNumber = game.dice.map((die)=>die.value);
-            console.log(totalNumber);
-            if (totalNumber.length === 5) {
-                totalNumber = totalNumber.reduce((amount, total) => amount + total);
-                console.log(totalNumber)
-                $("#" + $(this).attr("data-out")).text(totalNumber)
-            };
-            break;
-        case "kind3":
-            let testing = game.dice.map((die) => die.value);
-            console.log(testing);
-            var ones = testing.filter((num)=> num === 1);
-            var twos = testing.filter((num)=> num === 2);
-            var threes = testing.filter((num)=> num === 3);
-            var fours = testing.filter((num)=> num === 4);
-            var fives = testing.filter((num)=> num === 5);
-            var sixes = testing.filter((num)=> num === 6);
-            console.log(ones);
-            console.log(twos);
-            console.log(threes);
-            console.log(fours);
-            console.log(fives);
-            console.log(sixes);
-            if (this.id === "checkKind3") {
-                if (ones.length >= 3 || twos.length >= 3 || threes.length >= 3 || fours.length >= 3 || fives.length >= 3 || sixes.length >= 3) {
-                    console.log("Three of a kind")
-                    $("#"+$(this).attr("data-out")).text(testing.reduce((amount, total) => amount + total));
+
+    if ($("#" + $(this).attr("data-out")).attr("data-saved") === "false") {
+        var scoreArray = [].slice.call(document.querySelectorAll(".scoreValue"));
+
+        scoreArray = scoreArray.filter((score) => score.dataset.saved === "false");
+
+        scoreArray.forEach((score) => score.innerText = "0");
+
+        $(".check").removeClass("check-down");
+        $(this).addClass("check-down");
+
+        game.lastScore = $(this).attr("data-out");
+
+        let testing = game.dice.map((die) => die.value);
+        var ones = testing.filter((num) => num === 1);
+        var twos = testing.filter((num) => num === 2);
+        var threes = testing.filter((num) => num === 3);
+        var fours = testing.filter((num) => num === 4);
+        var fives = testing.filter((num) => num === 5);
+        var sixes = testing.filter((num) => num === 6);
+        let groupArray = [ones, twos, threes, fours, fives, sixes];
+        console.log(testing);
+        console.log(ones);
+        console.log(twos);
+        console.log(threes);
+        console.log(fours);
+        console.log(fives);
+        console.log(sixes);
+        console.log(groupArray);
+
+        switch (this.dataset.score) {
+            case "number":
+                let target = parseFloat(this.dataset.number);
+                let scores = game.dice.filter((die) => die.value === target).map((die) => die.value);
+                console.log(scores)
+                if (scores.length > 0) {
+                    let totalScore = scores.reduce((amount, total) => amount + total)
+                    console.log(totalScore)
+                    $("#" + $(this).attr("data-out")).text(totalScore)
+                } else {
+                    console.log("No scores like that here");
                 }
-            }
-            break;
-        default:
-            console.log("checkMe switch not working as expected");
+                break;
+
+            case "total":
+                let totalNumber = game.dice.map((die) => die.value);
+                console.log(totalNumber);
+                if (totalNumber.length === 5) {
+                    totalNumber = totalNumber.reduce((amount, total) => amount + total);
+                    console.log(totalNumber)
+                    $("#" + $(this).attr("data-out")).text(totalNumber)
+                };
+                break;
+
+            case "kind":
+                if (this.id === "checkKind3") {
+                    var couldBe = groupArray.some(arr => arr.length >= 3)
+                    if (couldBe) {
+                        console.log("3 of a Kind");
+                        $("#" + $(this).attr("data-out")).text(testing.reduce((amount, total) => amount + total));
+                    } else {
+                        console.log("not a 3 of a kind")
+                        $("#" + $(this).attr("data-out")).text("0");
+                    }
+                } else {
+                    var mightBe = groupArray.some(arr => arr.length >= 4);
+                    if (mightBe) {
+                        console.log("4 of a Kind");
+                        $("#" + $(this).attr("data-out")).text(testing.reduce((amount, total) => amount + total));
+                    } else {
+                        console.log("not a 4 of a kind")
+                        $("#" + $(this).attr("data-out")).text("0");
+                    }
+                }
+                break;
+
+            case "25":
+                let triple = groupArray.filter((array) => array.length === 3)
+                let double = groupArray.filter((array) => array.length === 2)
+
+                if (triple.length > 0 && double.length > 0) {
+                    console.log("fullhouse");
+                    $("#" + $(this).attr("data-out")).text($(this).attr("data-score"));
+                } else {
+                    console.log("no fullhouse");
+                }
+                break;
+
+            case "30":
+                var order = testing.sort((a, b) => a - b)
+                console.log(order);
+                var into = groupArray.filter(arr => arr.length >= 2);
+                console.log(into);
+                // Please, please find a better way to do this, this hurts my soul
+                if (order.includes(1) && order.includes(2) && order.includes(3) && order.includes(4) ||
+                    order.includes(2) && order.includes(3) && order.includes(4) && order.includes(5) ||
+                    order.includes(3) && order.includes(4) && order.includes(5) && order.includes(6)
+                ) {
+                    console.log("small straight");
+                    $("#" + $(this).attr("data-out")).text($(this).attr("data-score"));
+                } else {
+                    console.log("not a small straight");
+                    $("#" + $(this).attr("data-out")).text("0");
+                }
+                break;
+            case "40":
+                if (testing.includes(1) && testing.includes(2) && testing.includes(3) && testing.includes(4) && testing.includes(5) ||
+                    testing.includes(2) && testing.includes(3) && testing.includes(4) && testing.includes(5) && testing.includes(6)) {
+                    console.log("large straight");
+                    $("#" + $(this).attr("data-out")).text($(this).attr("data-score"));
+                } else {
+                    console.log("not a large straight");
+                    $("#" + $(this).attr("data-out")).text("0");
+                }
+                break;
+            case "50":
+                if (testing.every((val) => val === testing[0])) {
+                    console.log("score think its a yahtzee");
+                    $("#" + $(this).attr("data-out")).text($(this).attr("data-score"));
+                    game.oneYZ = true;
+                } else {
+                    console.log("score doesn't think it's a yahzee");
+                    $("#" + $(this).attr("data-out")).text("0");
+                }
+            default:
+                console.log("checkMe switch not working as expected");
+        }
+    } else {
+        console.log("already saved");
     }
 }
 
