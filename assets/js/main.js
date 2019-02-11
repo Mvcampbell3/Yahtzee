@@ -34,11 +34,12 @@ let die5 = new Dice("../images/Blankdie.jpg", "die5", "hold5");
 
 let game = {
     rollCount: 3,
+    totalRolls: 13,
     dice: [die1, die2, die3, die4, die5],
 
     roll: function () {
-        if (game.rollCount > 0) {
-            // game.rollCount--;
+        if (game.rollCount > 0 && game.totalRolls > 0) {
+            game.rollCount--;
             $(".check").removeClass("check-down");
             game.lastScore = null;
             var scoreArray = [].slice.call(document.querySelectorAll(".scoreValue"));
@@ -77,9 +78,10 @@ let game = {
     },
 
     clear: function () {
-        game.upperTotal();
+        game.totalScore();
         if (game.lastScore != null) {
             game.rollCount = 3;
+            game.totalRolls--;
             game.dice.forEach((die) => {
                 die.blank();
                 die.hold = true;
@@ -92,17 +94,29 @@ let game = {
     },
 
     upperTotal: function () {
-        var upperArray = [].slice.call(document.querySelectorAll(".upper"));
-        let sum = upperArray.map((score) => parseFloat(score.innerText)).reduce((amount, total) => amount + total);
-        console.log(sum);
-        $("#scoreUpSub").text(sum);
-        if (sum >= 63) {
+        let upperArray = [].slice.call(document.querySelectorAll(".upper"));
+        let upperSum = upperArray.map((score) => parseFloat(score.innerText)).reduce((amount, total) => amount + total);
+        console.log(upperSum);
+        $("#scoreUpSub").text(upperSum);
+        if (upperSum >= 63) {
             $("#scoreUpBonus").text(35);
-            $("#scoreUpper").text(sum + 35);
+            $("#scoreUpper").text(upperSum + 35);
         } else {
             $("#scoreUpBonus").text(0);
-            $("#scoreUpper").text(sum);
+            $("#scoreUpper").text(upperSum);
         }
+    },
+
+    lowerTotal: function() {
+        let lowerArray = [].slice.call(document.querySelectorAll(".lower"));
+        let lowerSum = lowerArray.map((score) => parseFloat(score.innerText)).reduce((amount, total) => amount + total);
+        $("#scoreLower").text(lowerSum);
+    },
+
+    totalScore: function() {
+        this.upperTotal();
+        this.lowerTotal();
+        $("#scoreTotal").text((parseFloat($("#scoreUpper").text()) + parseFloat($("#scoreLower").text())));
     },
 
     lastScore: null,
