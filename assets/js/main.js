@@ -72,7 +72,17 @@ let game = {
         let bigWinner = game.dice.map((die) => die.value);
         console.log(bigWinner);
         if (bigWinner.every((val) => val === bigWinner[0])) {
-            console.log("You sonofabitch!!!")
+            console.log("You sonofabitch!!!");
+            if (this.oneYZ === false) {
+                this.oneYZ = true;
+                console.log("set oneYZ to true");
+            } else {
+                $(".check").off("click", checkMe);
+                $(".check").on("click", checkBonusY);
+                // here is where we add the gate for if dataset.number = testing[0], run only the upper score number
+                // if != testing[0], run lower score function
+                console.log("should not be working");
+            }
         }
 
     },
@@ -93,6 +103,17 @@ let game = {
         }
     },
 
+    resetCheck: function () {
+        if (!game.stoppedCheck) {
+            game.clear();
+        } else {
+            game.stoppedCheck = false;
+            $(".check").off("click", checkBonusY);
+            $(".check").on("click", checkMe);
+            game.clear();
+        }
+    },
+
     upperTotal: function () {
         let upperArray = [].slice.call(document.querySelectorAll(".upper"));
         let upperSum = upperArray.map((score) => parseFloat(score.innerText)).reduce((amount, total) => amount + total);
@@ -107,13 +128,13 @@ let game = {
         }
     },
 
-    lowerTotal: function() {
+    lowerTotal: function () {
         let lowerArray = [].slice.call(document.querySelectorAll(".lower"));
         let lowerSum = lowerArray.map((score) => parseFloat(score.innerText)).reduce((amount, total) => amount + total);
         $("#scoreLower").text(lowerSum);
     },
 
-    totalScore: function() {
+    totalScore: function () {
         this.upperTotal();
         this.lowerTotal();
         $("#scoreTotal").text((parseFloat($("#scoreUpper").text()) + parseFloat($("#scoreLower").text())));
@@ -121,10 +142,11 @@ let game = {
 
     lastScore: null,
     oneYZ: false,
+    stoppedCheck: false,
 } // End of Game Object
 
 $(".rollBtn").on("click", game.roll);
-$(".clearBtn").on("click", game.clear);
+$(".clearBtn").on("click", game.resetCheck);
 
 game.dice.forEach((die) => die.blank());
 
@@ -258,6 +280,7 @@ function checkMe() {
                     console.log("score doesn't think it's a yahzee");
                     $("#" + $(this).attr("data-out")).text("0");
                 }
+                break;
             default:
                 console.log("checkMe switch not working as expected");
         }
@@ -266,7 +289,97 @@ function checkMe() {
     }
 }
 
+function checkBonusY() {
+    if ($("#" + $(this).attr("data-out")).attr("data-saved") === "false") {
+        game.stoppedCheck = true;
+        var scoreArray = [].slice.call(document.querySelectorAll(".scoreValue"));
 
+        scoreArray = scoreArray.filter((score) => score.dataset.saved === "false");
+
+        scoreArray.forEach((score) => score.innerText = "0");
+
+        $(".check").removeClass("check-down");
+        $(this).addClass("check-down");
+
+        game.lastScore = $(this).attr("data-out");
+
+        let testing = game.dice.map((die) => die.value);
+        var ones = testing.filter((num) => num === 1);
+        var twos = testing.filter((num) => num === 2);
+        var threes = testing.filter((num) => num === 3);
+        var fours = testing.filter((num) => num === 4);
+        var fives = testing.filter((num) => num === 5);
+        var sixes = testing.filter((num) => num === 6);
+        let groupArray = [ones, twos, threes, fours, fives, sixes];
+        console.log(testing);
+        console.log(ones);
+        console.log(twos);
+        console.log(threes);
+        console.log(fours);
+        console.log(fives);
+        console.log(sixes);
+        console.log(groupArray);
+
+        console.log(testing[0] + "This is the value we would be checking in bonusyz")
+
+        switch (this.dataset.score) {
+            case "number":
+                let target = parseFloat(this.dataset.number);
+                let scores = game.dice.filter((die) => die.value === target).map((die) => die.value);
+                console.log(scores)
+                if (scores.length > 0) {
+                    let totalScore = scores.reduce((amount, total) => amount + total)
+                    console.log(totalScore)
+                    $("#" + $(this).attr("data-out")).text(totalScore)
+                } else {
+                    console.log("No scores like that here");
+                }
+                break;
+
+            case "kind":
+                if (this.id === "checkKind3") {
+                    var couldBe = groupArray.some(arr => arr.length >= 3)
+                    if (couldBe) {
+                        console.log("3 of a Kind");
+                        $("#" + $(this).attr("data-out")).text(testing.reduce((amount, total) => amount + total));
+                    } else {
+                        console.log("not a 3 of a kind")
+                        $("#" + $(this).attr("data-out")).text("0");
+                    }
+                } else {
+                    var mightBe = groupArray.some(arr => arr.length >= 4);
+                    if (mightBe) {
+                        console.log("4 of a Kind");
+                        $("#" + $(this).attr("data-out")).text(testing.reduce((amount, total) => amount + total));
+                    } else {
+                        console.log("not a 4 of a kind")
+                        $("#" + $(this).attr("data-out")).text("0");
+                    }
+                }
+                break;
+
+            case "25":
+                console.log("fullhouse");
+                $("#" + $(this).attr("data-out")).text($(this).attr("data-score"));
+                break;
+
+            case "30":
+                console.log("small straight")
+                $("#" + $(this).attr("data-out")).text($(this).attr("data-score"));
+                break;
+
+            case "40":
+                console.log("large straight");
+                $("#" + $(this).attr("data-out")).text($(this).attr("data-score"));
+                break;
+
+            default:
+                console.log("checkMeBonusY switch not working as expected");
+        }
+
+    }
+
+}
 
 
 

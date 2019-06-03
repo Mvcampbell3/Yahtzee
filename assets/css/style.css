@@ -21,6 +21,8 @@ header{
 
 .gameSide{
     width: 40%;
+    min-width: 365px;
+
 }
 
 .dieBox{
@@ -31,7 +33,6 @@ header{
 .holdBox{
     display: flex;
     justify-content: space-evenly;
-
 }
 
 .buttonBox{
